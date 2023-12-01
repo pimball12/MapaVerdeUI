@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput } from "react-native";
 import { Colors } from "../../constants/colors";
 
-function Input({ label, placeholder, onChangeText, style, textInputConfig, value }) {
+function Input({ label, placeholder, onUpdateValue, style, textInputConfig, value }) {
 
     return (
 
@@ -11,7 +11,7 @@ function Input({ label, placeholder, onChangeText, style, textInputConfig, value
                 style={[styles.input, style]}
                 placeholder={placeholder}
                 placeholderTextColor={Colors.primary400}
-                onChangeText={onChangeText}
+                onChangeText={onUpdateValue}
                 value={value}
                 {...textInputConfig}
             />

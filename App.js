@@ -1,22 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { Pressable, SafeAreaView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import GardensList from './screens/App/GardensList';
-import { Ionicons } from '@expo/vector-icons';
-import GardensMap from './screens/App/GardensMap';
+import { StatusBar } from 'expo-status-bar';
+import { useContext, useEffect, useState } from 'react';
+import { Pressable } from 'react-native';
 import { Colors } from "./constants/colors";
-import Login from "./screens/Login/Login"
-import GardenDetails from './screens/App/GardenDetails';
 import GardenChat from './screens/App/GardenChat';
+import GardenDetails from './screens/App/GardenDetails';
+import GardensList from './screens/App/GardensList';
+import GardensMap from './screens/App/GardensMap';
+import LoginScreen from './screens/Login/LoginScreen';
+import Register from "./screens/Login/Register";
+import AppContextProvider, { AppContext } from './store/app-context';
+import { getRequest, postRequest } from './util/http';
+import LoadingOverlay from './components/UI/LoadingOverlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
 
 function Gardens() {
 
-	// return <Login />
+	const appContext = useContext(AppContext);
 
 	return (
 
@@ -49,7 +55,10 @@ function Gardens() {
 
 					return (
 
-						<Pressable style={({ pressed }) => [{ paddingHorizontal: 25 }, pressed && { opacity: 0.7 }]}>
+						<Pressable
+							style={({ pressed }) => [{ paddingHorizontal: 25 }, pressed && { opacity: 0.7 }]}
+							onPress={appContext.auth.logout}
+						>
 							<Ionicons name='ellipsis-vertical' color='white' size={25} />
 						</Pressable>
 					);
@@ -148,28 +157,106 @@ function Garden() {
 	);
 }
 
-export default function App() {
+function AuthStack() {
 
-	// return <Login/>
+	return (
+		<Stack.Navigator
+			screenOptions={{
+
+				headerStyle: { backgroundColor: Colors.primary500 },
+				headerTintColor: 'white',
+				contentStyle: { backgroundColor: Colors.primary100 },
+
+			}}
+		>
+			<Stack.Screen
+				name="Login"
+				component={LoginScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="Register"
+				component={Register}
+				options={{ headerShown: false }}
+			/>
+		</Stack.Navigator>
+	);
+}
+
+function AuthenticatedStack() {
 
 	return (
 
-		<SafeAreaView style={{ flex: 1 }}>
+		<Stack.Navigator
+			screenOptions={{
+
+				headerStyle: { backgroundColor: Colors.primary500 },
+				headerTintColor: 'white',
+				contentStyle: { backgroundColor: Colors.primary100 },
+			}}
+		>
+			<Stack.Screen
+				name="Gardens"
+				component={Gardens}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="Garden"
+				component={Garden}
+				options={{ headerShown: false }}
+			/>
+		</Stack.Navigator>
+	);
+}
+
+function Navigation() {
+
+	const appContext = useContext(AppContext);
+	return (
+
+		<NavigationContainer>
+			{!appContext.auth.isAuthenticated && <AuthStack />}
+			{appContext.auth.isAuthenticated && <AuthenticatedStack />}
+		</NavigationContainer>
+	);
+}
+
+function Root() {
+
+	const [isTryingToLogin, setIsTryingToLogin] = useState(true);
+
+	const appContext = useContext(AppContext);
+
+	useEffect(() => {
+
+		(async () => {
+
+			const storedToken = await AsyncStorage.getItem('token');
+
+			if (!!storedToken) {
+
+				const user = (await getRequest("/api/user", storedToken)).status;
+				console.log(user);
+
+				await appContext.auth.authenticate({token: storedToken, user: user});
+			}
+
+			setIsTryingToLogin(false);
+		})();
+	}, []);
+
+	return isTryingToLogin ? <LoadingOverlay /> : <Navigation />;
+
+	// return <Navigation />
+}
+
+export default function App() {
+
+	return (
+
+		<AppContextProvider>
 			<StatusBar style="light" />
-			<NavigationContainer>
-				<Stack.Navigator>
-					{/* <Stack.Screen
-						name="Garden"
-						component={Garden}
-						options={{ headerShown: false }}
-					/> */}
-					<Stack.Screen
-						name="Gardens"
-						component={Gardens}
-						options={{ headerShown: false }}
-					/>
-				</Stack.Navigator>
-			</NavigationContainer>
-		</SafeAreaView>
+			<Root />
+		</AppContextProvider>
 	);
 };

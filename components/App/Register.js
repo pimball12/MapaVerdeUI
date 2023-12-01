@@ -1,12 +1,11 @@
+import { useContext, useState } from "react";
 import { Alert, ImageBackground, KeyboardAvoidingView, ScrollView, StyleSheet, View } from "react-native";
 import Button from "../../components/UI/Button";
+import ImagePicker from "../../components/UI/ImagePicker";
 import Input from "../../components/UI/Input";
 import { Colors } from "../../constants/colors";
-import ImagePicker from "../../components/UI/ImagePicker";
-import { useContext, useState } from "react";
 import { AppContext } from "../../store/app-context";
 import { postRequest } from "../../util/http";
-import axios from "axios";
 
 
 function Register() {
@@ -36,7 +35,7 @@ function Register() {
 
         if (!!response?.data?.access_token) {
 
-            appContext.auth.authenticate({token: response.data.access_token, user: response.data.user});
+            appContext.auth.authenticate(response.data.access_token, response.data.user);
             // console.log(response);
         } else {
 

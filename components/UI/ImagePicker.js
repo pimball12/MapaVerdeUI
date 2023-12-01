@@ -69,7 +69,9 @@ function ImagePicker({ onTakeImage, takePhoto, aspect }) {
                         const image = await launchCameraAsync({
 
                             allowsEditing: true,
-                            aspect: [4,4]
+                            aspect: [4,4],
+                            base64: true
+                            
                         });
 
                         if (!!!image || image.canceled) {
@@ -78,10 +80,10 @@ function ImagePicker({ onTakeImage, takePhoto, aspect }) {
                         }
 
                         setPickedImageUri(image.assets[0].uri);
-                        onTakeImage(image.assets[0].uri);
+                        onTakeImage(image.assets[0].uri, image.assets[0].base64);
                     }}
                 >
-                    Tirar Foto
+                    Câmera
                 </Button>
                 <Button
                 style={styles.button}
@@ -99,7 +101,8 @@ function ImagePicker({ onTakeImage, takePhoto, aspect }) {
                         const image = await launchImageLibraryAsync({
 
                             allowsEditing: true,
-                            aspect: [4, 4]
+                            aspect: [4, 4],
+                            base64: true
                         });
 
                         if (!!!image || image.canceled) {
@@ -107,8 +110,10 @@ function ImagePicker({ onTakeImage, takePhoto, aspect }) {
                             return;
                         }
 
+                        console.log(image);
+
                         setPickedImageUri(image.assets[0].uri);
-                        onTakeImage(image.assets[0].uri);
+                        onTakeImage(image.assets[0].uri, image.assets[0].base64);
                     }}
                 >
                     Escolher

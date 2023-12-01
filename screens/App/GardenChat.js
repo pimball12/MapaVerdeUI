@@ -168,7 +168,7 @@ function GardenChat() {
                 }} />
             </View>
             <View style={styles.messageInputBox}>
-                <TextInput style={styles.messageInput} />
+                <TextInput text style={styles.messageInput} />
                 <Button style={styles.messageInputButton} icon='send'></Button>
             </View>
         </View>
@@ -206,7 +206,8 @@ const styles = StyleSheet.create({
         width: '85%',
         backgroundColor: Colors.primary100,
         borderRadius: 4,
-        borderWidth: 1
+        borderWidth: 1,
+        paddingHorizontal: 10
     },
 
     messageInputButton: {
