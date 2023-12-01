@@ -13,7 +13,7 @@ export async function postRequest(path, data, token) {
 
     if (!!token)    {
 
-        headers.Authorization = 'Bearer ' . token;
+        headers.Authorization = 'Bearer ' + token;
     }
 
     await axios.post(BACKEND_URL + path, data, {
@@ -58,7 +58,7 @@ export async function getRequest(path, token) {
 
     if (!!token)    {
 
-        headers.Authorization = 'Bearer ' . token;
+        headers.Authorization = 'Bearer ' + token;
     }
 
     await axios.get(BACKEND_URL + path, {
@@ -103,7 +103,7 @@ export async function putRequest(path, data, token) {
 
     if (!!token)    {
 
-        headers.Authorization = 'Bearer ' . token;
+        headers.Authorization = 'Bearer ' + token;
     }
 
     await axios.put(BACKEND_URL + path, data, {
@@ -148,7 +148,7 @@ export async function deleteRequest(path, token) {
 
     if (!!token)    {
 
-        headers.Authorization = 'Bearer ' . token;
+        headers.Authorization = 'Bearer ' + token;
     }
     
     await axios.delete(BACKEND_URL + path, {

@@ -1,6 +1,6 @@
 import { Alert, Image, ImageBackground, KeyboardAvoidingView, StyleSheet, View } from "react-native";
-import Button from "../../components/UI/Button";
-import Input from "../../components/UI/Input";
+import Button from "../UI/Button";
+import Input from "../UI/Input";
 import { Colors } from "../../constants/colors";
 import { useContext, useState } from "react";
 import { postRequest } from "../../util/http";

@@ -6,16 +6,16 @@ import { StatusBar } from 'expo-status-bar';
 import { useContext, useEffect, useState } from 'react';
 import { Pressable } from 'react-native';
 import { Colors } from "./constants/colors";
-import GardenChat from './screens/App/GardenChat';
-import GardenDetails from './screens/App/GardenDetails';
-import GardensList from './screens/App/GardensList';
-import GardensMap from './screens/App/GardensMap';
 import LoginScreen from './screens/Login/LoginScreen';
-import Register from "./screens/Login/Register";
+import RegisterScreen from "./screens/Login/RegisterScreen";
 import AppContextProvider, { AppContext } from './store/app-context';
-import { getRequest, postRequest } from './util/http';
+import { getRequest } from './util/http';
 import LoadingOverlay from './components/UI/LoadingOverlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import GardensMapScreen from './screens/App/GardensMapScreen';
+import GardensListScreen from './screens/App/GardensListScreen';
+import GardenDetailsScreen from './screens/App/GardenDetailsScreen';
+import GardenChatScreen from './screens/App/GardenChatScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -59,7 +59,7 @@ function Gardens() {
 							style={({ pressed }) => [{ paddingHorizontal: 25 }, pressed && { opacity: 0.7 }]}
 							onPress={appContext.auth.logout}
 						>
-							<Ionicons name='ellipsis-vertical' color='white' size={25} />
+							<Ionicons name='exit-outline' color='white' size={25} />
 						</Pressable>
 					);
 				}
@@ -68,7 +68,7 @@ function Gardens() {
 		>
 			<BottomTabs.Screen
 				name="GardensMap"
-				component={GardensMap}
+				component={GardensMapScreen}
 				options={{
 
 					title: 'Explorar Hortas',
@@ -81,7 +81,7 @@ function Gardens() {
 			/>
 			<BottomTabs.Screen
 				name="GardensList"
-				component={GardensList}
+				component={GardensListScreen}
 				options={{
 
 					title: 'Hortas próximas',
@@ -96,7 +96,7 @@ function Gardens() {
 	);
 }
 
-function Garden() {
+function Garden({route, navigation}) {
 
 	return (
 
@@ -129,7 +129,7 @@ function Garden() {
 		>
 			<BottomTabs.Screen
 				name="GardenDetails"
-				component={GardenDetails}
+				component={GardenDetailsScreen}
 				options={{
 
 					title: 'Detalhes',
@@ -139,10 +139,11 @@ function Garden() {
 						<Ionicons name="information-circle-sharp" size={size} color={color} />
 					),
 				}}
+				initialParams={{...route.params}}
 			/>
 			<BottomTabs.Screen
 				name="GardenChat"
-				component={GardenChat}
+				component={GardenChatScreen}
 				options={{
 
 					title: 'Chat',
@@ -152,6 +153,7 @@ function Garden() {
 						<Ionicons name="chatbox" size={size} color={color} />
 					),
 				}}
+				initialParams={{...route.params}}
 			/>
 		</BottomTabs.Navigator>
 	);
@@ -176,7 +178,7 @@ function AuthStack() {
 			/>
 			<Stack.Screen
 				name="Register"
-				component={Register}
+				component={RegisterScreen}
 				options={{ headerShown: false }}
 			/>
 		</Stack.Navigator>
@@ -235,8 +237,8 @@ function Root() {
 
 			if (!!storedToken) {
 
-				const user = (await getRequest("/api/user", storedToken)).status;
-				console.log(user);
+				const user = (await getRequest("/api/user", storedToken)).data;
+				// console.log(user);
 
 				await appContext.auth.authenticate({token: storedToken, user: user});
 			}

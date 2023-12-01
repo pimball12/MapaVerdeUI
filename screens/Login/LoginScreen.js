@@ -1,4 +1,4 @@
-import Login from '../../components/App/Login';
+import Login from '../../components/Login/Login';
 
 function LoginScreen({ navigation }) {
 

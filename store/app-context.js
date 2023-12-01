@@ -29,7 +29,7 @@ export default function AppContextProvider({ children }) {
                 user: authUser,
                 authenticate: ({token, user}) => {
 
-                    console.log([token, user]);
+                    // console.log([token, user]);
                     setAuthToken(token);
                     setUser(user);
                     AsyncStorage.setItem('token', token);
