@@ -53,126 +53,29 @@ function getRandomColor(id) {
     return color;
 }
 
-const messages = [
-
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 1,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: true,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 3,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: true,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 1,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: true,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 3,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 1,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: true,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 3,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: true,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 3,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: true,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 3,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: true,
-    },
-    {
-        name: "Sidney Edson Mella Neto",
-        user_id: 2,
-        owner: true,
-        message: "Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite Giritiquibom paratate unidunite ",
-        contributor: false,
-    },
-];
-
 function GardenChat({ route }) {
 
     const appContext = useContext(AppContext);
 
     const [messages, setMessages] = useState([]);
+    const [garden, setGargen] = useState();
     const [messageText, setMessageText] = useState('');
+    const [loading, setLoading] = useState(false);
 
     async function fetchMessages() {
 
-        const messagesFetched = await getRequest(`/api/messages?user&filter[garden_id]=${route.params.id}&sort=-id`, appContext.auth.token)
-        console.log(messagesFetched);
+        const messagesFetched = await getRequest(`/api/messages?user&filter[garden_id]=${route.params.id}&sort=-id`, appContext.auth.token);
+        const gardenFetched = await getRequest(`/api/gardens/${route.params.id}?owner`, appContext.auth.token);
+        console.log(gardenFetched);
         setMessages(messagesFetched.data.data);
+        setGargen(gardenFetched.data.data);
     }
 
     useEffect(() => {
 
         (async () => {
 
-            console.log('EFFECT');
+            // console.log('EFFECT');
             await fetchMessages();
         })();
     }, []);
@@ -180,6 +83,8 @@ function GardenChat({ route }) {
     function sendMessage() {
 
         (async () => {
+
+            setLoading(true);
 
             const payload = {
 
@@ -194,20 +99,28 @@ function GardenChat({ route }) {
 
             setMessageText('');
 
-            (async() => {
-            
-                console.log('SEND');
-                await fetchMessages();
-            })();
+            // console.log('SEND');
+            await fetchMessages();
+
+            setLoading(false);
         })();
     }
 
-    if (!messages) {
+    function updateMessages() {
+
+        (async () => {
+
+            // console.log('UPDATE');
+            setLoading(true);
+            await fetchMessages();
+            setLoading(false);;
+        })();
+    }
+
+    if (!messages || !garden || loading) {
 
         return <LoadingOverlay />
     }
-
-    let listViewRef;
 
     return (
 
@@ -215,18 +128,13 @@ function GardenChat({ route }) {
             <View style={styles.messagesContainer}>
                 <FlatList
                     inverted
-                    // ref={(ref) => {
-
-                    //     listViewRef = ref;
-                    // }}
-                    // onLayout={() => {listViewRef.scrollToEnd({animated: true})}}
                     data={messages}
                     renderItem={({ item, index }) => {
 
                         return (
 
                             <View key={index} style={[styles.messageBox, { backgroundColor: getRandomColor(item.user.id) }]}>
-                                <Text style={styles.messageUserName}>{item.user.name}</Text>
+                                <Text style={styles.messageUserName}>{item.user.name} {item.user.id == garden.owner.id ? ' (Dono)' : ''}</Text>
                                 <Text style={styles.messageText}>{item.text}</Text>
                             </View>
                         );
@@ -234,9 +142,9 @@ function GardenChat({ route }) {
                 />
             </View>
             <View style={styles.messageInputBox}>
+                <Button style={styles.messageInputButton} onPress={updateMessages} icon='reload'></Button>
                 <TextInput text style={styles.messageInput} value={messageText} onChangeText={text => setMessageText(text)} />
                 <Button style={styles.messageInputButton} onPress={sendMessage} icon='send'></Button>
-                {/* <Button style={styles.messageInputButton} onPress={() => {console.log('RELOAD'); fetchMessages()}} icon='reload-circle'></Button> */}
             </View>
         </View>
     );
@@ -270,7 +178,7 @@ const styles = StyleSheet.create({
     messageInput: {
 
         marginVertical: 8,
-        width: '85%',
+        width: '75%',
         backgroundColor: Colors.primary100,
         borderRadius: 4,
         borderWidth: 1,

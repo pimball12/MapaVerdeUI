@@ -1,6 +1,7 @@
 import axios from 'axios';
+import env from './env';
 
-const BACKEND_URL = 'http://200.203.185.183:8000';
+const BACKEND_URL = env.host;
 
 export async function postRequest(path, data, token) {
 

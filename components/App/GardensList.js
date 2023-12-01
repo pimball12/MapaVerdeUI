@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../util/http";
 import { AppContext } from "../../store/app-context";
 import { getHours } from "../../util/date";
+import env from "../../util/env";
 
 function GardensList({navigation}) {
 
@@ -37,7 +38,7 @@ function GardensList({navigation}) {
 
                     <Pressable style={({ pressed }) => [{}, pressed && styles.pressed]} onPress={gardenClickHandler.bind(this, item.id)}>
                         <View style={[styles.innerContainer]}>
-                            <Image style={styles.image} source={{ uri: 'http://200.203.185.183:8000/api/images/display/' + item.main_picture.file }} />
+                            <Image style={styles.image} source={{ uri: `${env.host}/api/images/display/${item.main_picture.file}` }} />
                             <View style={{ marginLeft: 10, flex: 1 }}>
                                 <Text style={{ color: Colors.primary700 }}>{item.name}</Text>
                                 <Text style={{ color: Colors.primary600 }}>{getHours(new Date(item.opening_time))} - {getHours(new Date(item.closing_time))}</Text>

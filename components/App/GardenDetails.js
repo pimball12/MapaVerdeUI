@@ -6,6 +6,7 @@ import { AppContext } from "../../store/app-context";
 import { getRequest } from "../../util/http";
 import { getHours } from "../../util/date";
 import LoadingOverlay from "../UI/LoadingOverlay";
+import env from "../../util/env";
 
 function GardenDetails({ navigation, route}) {
 
@@ -70,7 +71,7 @@ function GardenDetails({ navigation, route}) {
             >
                 <View style={{ flex: 1, backgroundColor: Colors.primary700, alignItems:'center', justifyContent: 'center' }}>
                     <Image
-                        source={{ uri: 'http://200.203.185.183:8000/api/images/display/' + selectedImage }}
+                        source={{ uri: `${env.host}/api/images/display/${selectedImage}` }}
                         style={{
 
                             width: '100%',
@@ -85,7 +86,7 @@ function GardenDetails({ navigation, route}) {
     return (
 
         <ScrollView style={styles.container}>
-            <Image source={{ uri: 'http://200.203.185.183:8000/api/images/display/' + garden.main_picture.file }} style={styles.image} />
+            <Image source={{ uri: `${env.host}/api/images/display/${garden.main_picture.file}` }} style={styles.image} />
             <View style={styles.contactContainer}>
                 <Text style={styles.contactText}>{getHours(new Date(garden.opening_time))} - {getHours(new Date(garden.closing_time))}</Text>
                 <Text style={styles.contactText}>{garden.owner.name}</Text>
@@ -108,7 +109,7 @@ function GardenDetails({ navigation, route}) {
                                 key={index}
                                 style={({ pressed }) => pressed && { opacity: 0.7 }}
                             >
-                                <Image source={{ uri: 'http://200.203.185.183:8000/api/images/display/' + item.file }} style={styles.carouselImage} />
+                                <Image source={{ uri: `${env.host}/api/images/display/${item.file}` }} style={styles.carouselImage} />
                             </Pressable>
                         );
                     })}
