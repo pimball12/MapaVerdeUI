@@ -7,7 +7,7 @@ import { getRequest } from "../../util/http";
 import { getHours } from "../../util/date";
 import LoadingOverlay from "../UI/LoadingOverlay";
 
-function GardenDetails({ navigation, route, id }) {
+function GardenDetails({ navigation, route}) {
 
     // console.log(route);
 

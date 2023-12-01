@@ -1,6 +1,10 @@
+import { useContext, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
-import { Colors } from "../../constants/colors";
 import Button from "../../components/UI/Button";
+import { Colors } from "../../constants/colors";
+import { AppContext } from "../../store/app-context";
+import { getRequest, postRequest } from "../../util/http";
+import LoadingOverlay from "../UI/LoadingOverlay";
 
 function getRandomColor(id) {
 
@@ -150,26 +154,89 @@ const messages = [
     },
 ];
 
-function GardenChat() {
+function GardenChat({ route }) {
+
+    const appContext = useContext(AppContext);
+
+    const [messages, setMessages] = useState([]);
+    const [messageText, setMessageText] = useState('');
+
+    async function fetchMessages() {
+
+        const messagesFetched = await getRequest(`/api/messages?user&filter[garden_id]=${route.params.id}&sort=-id`, appContext.auth.token)
+        console.log(messagesFetched);
+        setMessages(messagesFetched.data.data);
+    }
+
+    useEffect(() => {
+
+        (async () => {
+
+            console.log('EFFECT');
+            await fetchMessages();
+        })();
+    }, []);
+
+    function sendMessage() {
+
+        (async () => {
+
+            const payload = {
+
+                text: messageText,
+                user_id: appContext.auth.user.id,
+                garden_id: route.params.id
+            };
+
+            const res = await postRequest('/api/messages', payload, appContext.auth.token);
+
+            console.log(res.data);
+
+            setMessageText('');
+
+            (async() => {
+            
+                console.log('SEND');
+                await fetchMessages();
+            })();
+        })();
+    }
+
+    if (!messages) {
+
+        return <LoadingOverlay />
+    }
+
+    let listViewRef;
 
     return (
 
         <View style={styles.container}>
             <View style={styles.messagesContainer}>
-                <FlatList data={messages} renderItem={({ item, index }) => {
+                <FlatList
+                    inverted
+                    // ref={(ref) => {
 
-                    return (
+                    //     listViewRef = ref;
+                    // }}
+                    // onLayout={() => {listViewRef.scrollToEnd({animated: true})}}
+                    data={messages}
+                    renderItem={({ item, index }) => {
 
-                        <View key={index} style={[styles.messageBox, { backgroundColor: getRandomColor(item.user_id) }]}>
-                            <Text style={styles.messageUserName}>{item.name}{item.contributor ? " (Contribuidor)" : (item.owner ? " (Dono)" : "")}</Text>
-                            <Text style={styles.messageText}>{item.message}</Text>
-                        </View>
-                    );
-                }} />
+                        return (
+
+                            <View key={index} style={[styles.messageBox, { backgroundColor: getRandomColor(item.user.id) }]}>
+                                <Text style={styles.messageUserName}>{item.user.name}</Text>
+                                <Text style={styles.messageText}>{item.text}</Text>
+                            </View>
+                        );
+                    }}
+                />
             </View>
             <View style={styles.messageInputBox}>
-                <TextInput text style={styles.messageInput} />
-                <Button style={styles.messageInputButton} icon='send'></Button>
+                <TextInput text style={styles.messageInput} value={messageText} onChangeText={text => setMessageText(text)} />
+                <Button style={styles.messageInputButton} onPress={sendMessage} icon='send'></Button>
+                {/* <Button style={styles.messageInputButton} onPress={() => {console.log('RELOAD'); fetchMessages()}} icon='reload-circle'></Button> */}
             </View>
         </View>
     );
